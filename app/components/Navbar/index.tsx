@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, MessageCircle } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -17,6 +17,13 @@ import {
 
 const PHONE_DISPLAY = "07 65 54 98 36";
 const PHONE_TEL = "+33765549836";
+
+// WhatsApp: numéro sans "+" + message
+const WA_NUMBER = PHONE_TEL.replace(/^\+/, ""); // "33765549836"
+const WA_TEXT = encodeURIComponent(
+  "Bonjour ! Je souhaite des infos pour un événement."
+);
+const WA_HREF = `https://wa.me/${WA_NUMBER}?text=${WA_TEXT}`;
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -33,7 +40,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-sm font-semibold tracking-wide text-gray-100"
+            className="text-xl font-semibold tracking-wide text-gray-100"
             aria-label="Aller à l’accueil">
             <span className="text-[#D4AF37]">KLB</span> Events
           </Link>
@@ -47,7 +54,7 @@ export default function Navbar() {
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* Zone droite desktop : menu + téléphone */}
+          {/* Zone droite desktop : menu + téléphone + WhatsApp */}
           <div className="hidden md:flex items-center gap-4 overflow-visible">
             <NavigationMenu viewport={false}>
               <NavigationMenuList className="flex items-center gap-2">
@@ -72,7 +79,7 @@ export default function Navbar() {
                     asChild
                     className={navigationMenuTriggerStyle()}>
                     <Link
-                      href="/offers"
+                      href="/#pricing"
                       className={`text-black ${
                         isActive("/offers")
                           ? "ring-1 ring-[#D4AF37]/50 rounded-lg"
@@ -87,7 +94,6 @@ export default function Navbar() {
                   <NavigationMenuTrigger className="text-black">
                     Plus
                   </NavigationMenuTrigger>
-
                   <NavigationMenuContent
                     className="
                       z-[60] md:left-auto md:right-0
@@ -101,13 +107,10 @@ export default function Navbar() {
                         <NavigationMenuLink asChild>
                           <Link
                             href="/about"
-                            className="
-          group block rounded-lg border border-white/10 bg-[#141415] p-3
-          hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
-        ">
+                            className="group block rounded-lg border border-white/10 bg-[#141415] p-3 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]">
                             <div className="flex items-start gap-3">
                               <div className="min-w-0">
-                                <div className="text-sm font-medium text-gray-100">
+                                <div className="text-sm font-medium text-[#D4AF37]">
                                   À propos
                                 </div>
                                 <p className="mt-0.5 text-xs text-gray-400">
@@ -123,19 +126,15 @@ export default function Navbar() {
                           </Link>
                         </NavigationMenuLink>
                       </li>
-
                       {/* Galerie */}
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
                             href="#portfolio"
-                            className="
-          group block rounded-lg border border-white/10 bg-[#141415] p-3
-          hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
-        ">
+                            className="group block rounded-lg border border-white/10 bg-[#141415] p-3 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]">
                             <div className="flex items-start gap-3">
                               <div className="min-w-0">
-                                <div className="text-sm font-medium text-gray-100">
+                                <div className="text-sm font-medium text-[#D4AF37]">
                                   Galerie
                                 </div>
                                 <p className="mt-0.5 text-xs text-gray-400">
@@ -155,12 +154,17 @@ export default function Navbar() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
+                {/* 🔁 Remplacement du CTA par WhatsApp */}
                 <NavigationMenuItem>
-                  <Link
-                    href="/contact"
-                    className="rounded-xl bg-[#D4AF37] px-4 py-2 text-sm font-medium text-black hover:bg-[#c49a2c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]">
-                    Demander un devis
-                  </Link>
+                  <a
+                    href={WA_HREF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-4 py-2 text-sm font-medium text-black hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/60"
+                    aria-label="Discuter sur WhatsApp">
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp
+                  </a>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
@@ -227,6 +231,7 @@ export default function Navbar() {
                   </Link>
                 </li>
 
+                {/* 📞 Téléphone (mobile) */}
                 <li className="pt-2">
                   <a
                     href={`tel:${PHONE_TEL}`}
@@ -239,13 +244,19 @@ export default function Navbar() {
                   </a>
                 </li>
 
+                {/* 🔁 WhatsApp (mobile) */}
                 <li className="pt-2">
-                  <Link
-                    href="/contact"
+                  <a
+                    href={WA_HREF}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => setOpen(false)}
-                    className="block rounded-xl bg-[#D4AF37] px-4 py-2 text-center text-sm font-medium text-black hover:bg-[#c49a2c]">
-                    Demander un devis
-                  </Link>
+                    className="block rounded-xl bg-[#25D366] px-4 py-2 text-center text-sm font-medium text-black hover:brightness-95">
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <MessageCircle className="h-4 w-4" />
+                      WhatsApp
+                    </span>
+                  </a>
                 </li>
               </ul>
             </div>

@@ -35,9 +35,9 @@ export default function Section1() {
 
           <div className="mt-4 flex flex-col sm:flex-row gap-3">
             <Link
-              href="/contact"
+              href="#contact"
               className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-medium bg-[#D4AF37] text-black hover:bg-[#c49a2c] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]">
-              Demander un devis
+              Me contacter
             </Link>
             <Link
               href="#portfolio"

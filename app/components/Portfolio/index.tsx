@@ -114,7 +114,7 @@ export default function Portfolio() {
                   )}
                 </div>
                 <div className="p-3 text-left">
-                  <h3 className="text-base font-semibold">{p.title}</h3>
+                  <h3 className="text-base  font-semibold">{p.title}</h3>
                   <p className="text-sm text-gray-400 line-clamp-2">
                     {p.description}
                   </p>
@@ -156,7 +156,7 @@ export default function Portfolio() {
               {/* Légende */}
               <div className="p-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-[#D4AF37]">
                     {p.title}
                   </h3>
                   {p?.category && (
@@ -165,7 +165,7 @@ export default function Portfolio() {
                     </span>
                   )}
                 </div>
-                <p className="mt-1 text-sm text-gray-400 line-clamp-2">
+                <p className="mt-1 text-sm text-left text-gray-400 line-clamp-2">
                   {p.description}
                 </p>
               </div>

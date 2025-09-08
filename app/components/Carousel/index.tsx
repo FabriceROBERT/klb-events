@@ -120,7 +120,7 @@ export default function Carousel({
       aria-label="Carrousel d’images"
       onKeyDown={onKeyDown}>
       <div
-        className={`relative ${heightClass} overflow-hidden shadow-lg rounded-2xl`}
+        className={`relative ${heightClass} overflow-hidden shadow-lg rounded-md`}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onFocus={() => setPaused(true)}

@@ -1,3 +1,4 @@
+import CastleAndVideobooth from "@/app/components/CastleAndVideobooth";
 import ContactCard from "@/app/components/ContactCard";
 import Header from "@/app/components/Header";
 import Portfolio from "@/app/components/Portfolio";
@@ -12,8 +13,8 @@ export default function Home() {
       <section id="pricing" className=" w-full">
         <PricingSection />
       </section>
+      <CastleAndVideobooth />
       <Section1 />
-
       {/* Section Portfolio */}
       <section id="portfolio" className=" w-full">
         <Portfolio />
@@ -23,7 +24,7 @@ export default function Home() {
         <ContactCard
           name="LANGROMME David"
           role="DJ • KLB Events"
-          email="david.langromme@protonmail.com"
+          email="klbevents77@gmail.com"
           phone="+33765549836"
           avatarSrc="/img/photoprofile.png"
           whatsappNumber="+33765549836"

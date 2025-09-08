@@ -50,7 +50,9 @@ export default function Lightbox({ item, onClose }: Props) {
         </div>
 
         <div className="p-4 md:p-6">
-          <h3 className="text-xl md:text-2xl font-semibold">{item.title}</h3>
+          <h3 className="text-xl md:text-2xl text-[#D4AF37] font-semibold">
+            {item.title}
+          </h3>
           <p className="mt-1 text-white/80">{item.description}</p>
         </div>
       </div>
