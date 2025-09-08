@@ -40,7 +40,7 @@ export default function PricingSection() {
           <h2
             id="pricing-title"
             className="text-3xl md:text-4xl font-semibold tracking-tight">
-            Nos offres <span className="text-[#D4AF37]">KLB Events</span>
+            Offres <span className="text-[#D4AF37]">KLB Events</span>
           </h2>
           <p className="text-gray-400 mt-3">
             Choisissez la formule adaptée à votre événement — design sobre,
