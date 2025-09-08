@@ -1,7 +1,7 @@
-// app/components/BoothCastleScroller.tsx
+// app/components/CastleAndVideobooth/index.tsx
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import {
   MessageCircle,
@@ -25,20 +25,17 @@ type Props = {
 };
 
 const DEFAULT_VIDEObooth: MediaItem[] = [
-  { src: "/img/IMG-20250908-WA0008.jpg", alt: "" },
-  { src: "/img/IMG-20250908-WA0012.jpg", alt: "" },
-  { src: "/img/videobooth.jpg", alt: "" },
-  { src: "/img/videobooth/4.jpg", alt: "" },
+  { src: "/img/IMG-20250908-WA0008.jpg", alt: "Videobooth 1" },
+  { src: "/img/IMG-20250908-WA0012.jpg", alt: "Videobooth 2" },
+  { src: "/img/videobooth.jpg", alt: "Videobooth 3" },
+  { src: "/img/videobooth/4.jpg", alt: "Videobooth 4" },
 ];
 
 const DEFAULT_CHATEAUX: MediaItem[] = [
-  { src: "/img/IMG-20250908-WA0005.jpg", alt: "" },
-  { src: "/img/IMG-20250908-WA0004.jpg", alt: "" },
-  {
-    src: "/img/IMG-20250908-WA0014.jpg",
-    alt: "",
-  },
-  { src: "/img/IMG-20250908-WA0007.jpg", alt: "" },
+  { src: "/img/IMG-20250908-WA0005.jpg", alt: "Château gonflable A" },
+  { src: "/img/IMG-20250908-WA0004.jpg", alt: "Château gonflable B" },
+  { src: "/img/IMG-20250908-WA0014.jpg", alt: "Château gonflable C" },
+  { src: "/img/IMG-20250908-WA0007.jpg", alt: "Château gonflable montage" },
 ];
 
 export default function BoothCastleScroller({
@@ -54,14 +51,20 @@ export default function BoothCastleScroller({
     () => (tab === "videobooth" ? videobooth : chateaux),
     [tab, videobooth, chateaux]
   );
+
   const scrollerRef = useRef<HTMLDivElement | null>(null);
 
+  // ✅ WhatsApp URL builder mémoïsé
   const waNumber = whatsappTel.replace(/^\+/, "");
-  const waHref = (label: string) =>
-    `https://wa.me/${waNumber}?text=${encodeURIComponent(
-      `Bonjour ! Je souhaite des infos/réserver ${label} (date, lieu, horaires) : `
-    )}`;
+  const waHref = useCallback(
+    (label: string) =>
+      `https://wa.me/${waNumber}?text=${encodeURIComponent(
+        `Bonjour ! Je souhaite des infos/réserver ${label} (date, lieu, horaires) : `
+      )}`,
+    [waNumber]
+  );
 
+  // ✅ details dépend de tab + waHref (résout le warning)
   const details = useMemo(() => {
     if (tab === "videobooth") {
       return {
@@ -92,7 +95,7 @@ export default function BoothCastleScroller({
       cta: waHref("un château gonflable"),
       icon: <Sparkles className="h-5 w-5 text-[#D4AF37]" />,
     };
-  }, [tab]);
+  }, [tab, waHref]);
 
   const scrollByCard = (dir: "left" | "right") => {
     const el = scrollerRef.current;
@@ -103,6 +106,9 @@ export default function BoothCastleScroller({
       : el.clientWidth * 0.8;
     el.scrollBy({ left: dir === "left" ? -step : step, behavior: "smooth" });
   };
+
+  // ✅ Timer typé (remplace les (scrollerRef as any)._t)
+  const scrollEndTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const onScrollEnd = () => {
     const el = scrollerRef.current;
@@ -220,10 +226,9 @@ export default function BoothCastleScroller({
             <div
               ref={scrollerRef}
               onScroll={() => {
-                // Throttle simple : au "end" du scroll (passif), on met un timeout court
-                if ((scrollerRef as any)._t)
-                  clearTimeout((scrollerRef as any)._t);
-                (scrollerRef as any)._t = setTimeout(onScrollEnd, 120);
+                if (scrollEndTimer.current)
+                  clearTimeout(scrollEndTimer.current);
+                scrollEndTimer.current = setTimeout(onScrollEnd, 120);
               }}
               className="
                 relative flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2

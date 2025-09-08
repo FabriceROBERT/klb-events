@@ -7,22 +7,33 @@ import { ZoomIn } from "lucide-react";
 import { portfolioItems } from "@/app/data/portfolioItems";
 import Lightbox from "@/app/components/Lightbox";
 
+// ✅ Déduire le type des éléments depuis la data source
+type PortfolioItem = (typeof portfolioItems)[number];
+
 export default function Portfolio() {
   const [selected, setSelected] = useState<number | null>(null);
-  const items = useMemo(() => portfolioItems, []);
 
-  // Catégories auto (si pas de category => "Autre") + "Tous"
+  // ✅ items typés
+  const items = useMemo<PortfolioItem[]>(
+    () => portfolioItems as PortfolioItem[],
+    []
+  );
+
+  // ✅ Catégories (plus de any)
   const categories = useMemo(() => {
     const set = new Set<string>();
-    items.forEach((i: any) => set.add(i?.category ?? "Autre"));
+    items.forEach((i) => set.add(i.description ?? "Autre"));
     return ["Tous", ...Array.from(set)];
   }, [items]);
+
   const [filter, setFilter] = useState<string>(categories[0] ?? "Tous");
+
+  // ✅ Filtrage typé
   const filtered = useMemo(
     () =>
       filter === "Tous"
         ? items
-        : items.filter((i: any) => (i?.category ?? "Autre") === filter),
+        : items.filter((i) => (i.description ?? "Autre") === filter),
     [items, filter]
   );
 
@@ -55,7 +66,7 @@ export default function Portfolio() {
           Sélection de prestations — mariages, corporate, anniversaires.
         </p>
 
-        {/* Filtres (affichés seulement si plusieurs catégories) */}
+        {/* Filtres */}
         {categories.length > 1 && (
           <div
             className="mb-10 flex w-full items-center justify-center gap-2 overflow-x-auto px-1
@@ -83,13 +94,13 @@ export default function Portfolio() {
           </div>
         )}
 
-        {/* Slider mobile (<= md): scroll-snap */}
+        {/* Slider mobile */}
         <div className="md:hidden w-full">
           <div
             className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2
                        [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Galerie défilante">
-            {filtered.map((p: any, idx: number) => (
+            {filtered.map((p, idx) => (
               <button
                 key={`${p.title}-${idx}`}
                 className="shrink-0 w-[85%] overflow-hidden rounded-xl
@@ -106,10 +117,9 @@ export default function Portfolio() {
                     className="object-cover"
                     sizes="90vw"
                   />
-                  {/* Badge catégorie si dispo */}
-                  {p?.category && (
+                  {p.description && (
                     <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-1 text-[10px] tracking-wide text-[#D4AF37]">
-                      {p.category}
+                      {p.description}
                     </span>
                   )}
                 </div>
@@ -124,9 +134,9 @@ export default function Portfolio() {
           </div>
         </div>
 
-        {/* Grid desktop (>= md) : 3 colonnes */}
+        {/* Grid desktop */}
         <div className="hidden md:grid grid-cols-3 gap-6 lg:gap-8 max-w-6xl w-full">
-          {filtered.map((p: any, idx: number) => (
+          {filtered.map((p, idx) => (
             <button
               key={`${p.title}-${idx}`}
               className="group relative overflow-hidden rounded-2xl
@@ -159,9 +169,9 @@ export default function Portfolio() {
                   <h3 className="text-lg font-semibold text-[#D4AF37]">
                     {p.title}
                   </h3>
-                  {p?.category && (
+                  {p.description && (
                     <span className="rounded-full border border-[#D4AF37]/40 px-2 py-0.5 text-[11px] text-[#D4AF37]">
-                      {p.category}
+                      {p.description}
                     </span>
                   )}
                 </div>
@@ -174,7 +184,7 @@ export default function Portfolio() {
         </div>
       </div>
 
-      {/* ---- Effet BLUR uniquement au clic ---- */}
+      {/* Blur au clic */}
       {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
@@ -183,7 +193,7 @@ export default function Portfolio() {
         />
       )}
 
-      {/* Lightbox au-dessus du blur */}
+      {/* Lightbox */}
       <div className="z-50">
         <Lightbox
           item={isOpen ? items[selected!] : null}
