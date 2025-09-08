@@ -196,7 +196,7 @@ export default function Navbar() {
               <ul className="mt-3 space-y-1">
                 <li>
                   <Link
-                    href="/events"
+                    href="/#pricing"
                     onClick={() => setOpen(false)}
                     className={`block rounded-lg px-3 py-2 text-gray-100 hover:bg-white/5 ${
                       isActive("/events") ? "ring-1 ring-[#D4AF37]/50" : ""
@@ -206,7 +206,7 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link
-                    href="/offers"
+                    href="/#pricing"
                     onClick={() => setOpen(false)}
                     className={`block rounded-lg px-3 py-2 text-gray-100 hover:bg-white/5 ${
                       isActive("/offers") ? "ring-1 ring-[#D4AF37]/50" : ""
@@ -224,7 +224,7 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link
-                    href="/gallery"
+                    href="/#portfolio"
                     onClick={() => setOpen(false)}
                     className="block rounded-lg px-3 py-2 text-gray-100 hover:bg-white/5">
                     Galerie
