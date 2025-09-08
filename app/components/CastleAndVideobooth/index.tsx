@@ -25,17 +25,16 @@ type Props = {
 };
 
 const DEFAULT_VIDEObooth: MediaItem[] = [
-  { src: "/img/IMG-20250908-WA0008.jpg", alt: "Videobooth 1" },
-  { src: "/img/IMG-20250908-WA0012.jpg", alt: "Videobooth 2" },
-  { src: "/img/videobooth.jpg", alt: "Videobooth 3" },
-  { src: "/img/videobooth/4.jpg", alt: "Videobooth 4" },
+  { src: "/img/IMG-20250908-WA0008.jpg", alt: "" },
+  { src: "/img/IMG-20250908-WA0012.jpg", alt: "" },
+  { src: "/img/videobooth.jpg", alt: "" },
 ];
 
 const DEFAULT_CHATEAUX: MediaItem[] = [
-  { src: "/img/IMG-20250908-WA0005.jpg", alt: "Château gonflable A" },
-  { src: "/img/IMG-20250908-WA0004.jpg", alt: "Château gonflable B" },
-  { src: "/img/IMG-20250908-WA0014.jpg", alt: "Château gonflable C" },
-  { src: "/img/IMG-20250908-WA0007.jpg", alt: "Château gonflable montage" },
+  { src: "/img/IMG-20250908-WA0005.jpg", alt: "" },
+  { src: "/img/IMG-20250908-WA0004.jpg", alt: "" },
+  { src: "/img/IMG-20250908-WA0014.jpg", alt: "" },
+  { src: "/img/IMG-20250908-WA0007.jpg", alt: "" },
 ];
 
 export default function BoothCastleScroller({
