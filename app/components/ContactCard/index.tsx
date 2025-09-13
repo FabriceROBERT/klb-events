@@ -188,6 +188,10 @@ export default function ContactCard({
           </ul>
         </div>
       </div>
+      {/* Note légale / clarification */}
+      <p className="mt-6 text-center mb-10 text-xs text-gray-500">
+        Les devis sont gratuits et n’impliquent aucun engagement de votre part.
+      </p>
 
       {/* Liseré or décoratif */}
       <div className="mt-3 h-0.5 w-24 mx-auto bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />

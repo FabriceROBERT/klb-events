@@ -26,6 +26,6 @@ export const carouselItems: CarouselItems[] = [
   },
   {
     title: "Gala - Nantes",
-    img: "/img/IMG-20250827-WA0033.jpg",
+    img: "/img/WhatsApp Image 2025-09-13 à 12.44.35_b662841f.jpg",
   },
 ];

@@ -7,33 +7,29 @@ import { ZoomIn } from "lucide-react";
 import { portfolioItems } from "@/app/data/portfolioItems";
 import Lightbox from "@/app/components/Lightbox";
 
-// ✅ Déduire le type des éléments depuis la data source
 type PortfolioItem = (typeof portfolioItems)[number];
 
 export default function Portfolio() {
   const [selected, setSelected] = useState<number | null>(null);
 
-  // ✅ items typés
   const items = useMemo<PortfolioItem[]>(
     () => portfolioItems as PortfolioItem[],
     []
   );
 
-  // ✅ Catégories (plus de any)
   const categories = useMemo(() => {
     const set = new Set<string>();
-    items.forEach((i) => set.add(i.description ?? "Autre"));
+    items.forEach((i) => set.add(i.category ?? "Autre"));
     return ["Tous", ...Array.from(set)];
   }, [items]);
 
   const [filter, setFilter] = useState<string>(categories[0] ?? "Tous");
 
-  // ✅ Filtrage typé
   const filtered = useMemo(
     () =>
       filter === "Tous"
         ? items
-        : items.filter((i) => (i.description ?? "Autre") === filter),
+        : items.filter((i) => (i.category ?? "Autre") === filter),
     [items, filter]
   );
 
@@ -118,8 +114,8 @@ export default function Portfolio() {
                     sizes="90vw"
                   />
                   {p.description && (
-                    <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-1 text-[10px] tracking-wide text-[#D4AF37]">
-                      {p.description}
+                    <span className="absolute left-2 top-2 rounded-full uppercase tracking-widest bg-black/60 px-2 py-1 text-[10px]  text-[#D4AF37]">
+                      {p.category}
                     </span>
                   )}
                 </div>
@@ -165,13 +161,13 @@ export default function Portfolio() {
 
               {/* Légende */}
               <div className="p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-y-2 items-center justify-between">
                   <h3 className="text-lg font-semibold text-[#D4AF37]">
                     {p.title}
                   </h3>
                   {p.description && (
-                    <span className="rounded-full border border-[#D4AF37]/40 px-2 py-0.5 text-[11px] text-[#D4AF37]">
-                      {p.description}
+                    <span className="rounded-full uppercase tracking-widest border border-[#D4AF37]/40 px-2 py-0.5 text-[11px] text-[#D4AF37]">
+                      {p.category}
                     </span>
                   )}
                 </div>

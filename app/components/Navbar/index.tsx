@@ -106,7 +106,7 @@ export default function Navbar() {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            href="/about"
+                            href="#aboutMe"
                             className="group block rounded-lg border border-white/10 bg-[#141415] p-3 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]">
                             <div className="flex items-start gap-3">
                               <div className="min-w-0">
@@ -216,7 +216,7 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link
-                    href="/about"
+                    href="#aboutMe"
                     onClick={() => setOpen(false)}
                     className="block rounded-lg px-3 py-2 text-gray-100 hover:bg-white/5">
                     À propos
