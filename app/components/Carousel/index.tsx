@@ -120,7 +120,7 @@ export default function Carousel({
       aria-label="Carrousel d’images"
       onKeyDown={onKeyDown}>
       <div
-        className={`relative ${heightClass} overflow-hidden shadow-lg rounded-md`}
+        className={`relative ${heightClass} overflow-hidden rounded-3xl shadow-[0_30px_60px_-25px_rgba(0,0,0,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]`}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onFocus={() => setPaused(true)}
@@ -131,19 +131,28 @@ export default function Carousel({
         tabIndex={0}>
         {/* Piste */}
         <div
-          className="absolute inset-0 flex transition-transform duration-500 ease-out"
+          className="absolute inset-0 flex transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{ transform: `translateX(-${index * 100}%)` }}
           aria-live="polite">
           {slidesMemo.map((s, i) => (
             <figure
               key={`${s.src}-${i}`}
-              className="relative shrink-0 w-full h-full"
+              className="relative shrink-0 w-full h-full overflow-hidden"
               aria-label={`Diapositive ${i + 1} sur ${len}`}>
+              {/* Zoom lent façon « Ken Burns » sur la diapositive active */}
               <Image
                 src={s.src}
                 alt={s.alt}
                 fill
-                className={`object-cover ${grayscaleClass}`}
+                className={`object-cover ${
+                  i === index ? "scale-110 motion-reduce:scale-100!" : "scale-100"
+                } ${grayscaleClass}`}
+                style={{
+                  transition:
+                    i === index
+                      ? "scale 6s linear, filter 0.5s ease"
+                      : "scale 0.7s ease, filter 0.5s ease",
+                }}
                 sizes="(max-width: 768px) 100vw, 480px"
                 priority={i === 0}
                 draggable={false}
@@ -194,7 +203,7 @@ export default function Carousel({
 
       {/* Indicateurs */}
       {len > 1 && (
-        <div className="mt-3 flex items-center justify-center gap-2">
+        <div className="mt-4 flex items-center justify-center gap-1.5">
           {slidesMemo.map((_, i) => {
             const active = i === index;
             return (
@@ -204,11 +213,15 @@ export default function Carousel({
                 onClick={() => goTo(i)}
                 aria-label={`Aller à l’image ${i + 1}`}
                 aria-current={active ? "true" : "false"}
-                className="h-2.5 w-2.5 rounded-full transition"
-                style={{
-                  backgroundColor: active ? dotActive : "rgba(0,0,0,0.25)",
-                }}
-              />
+                className="flex h-6 items-center transition-[width] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                style={{ width: active ? 32 : 12 }}>
+                <span
+                  className="block h-1.5 w-full rounded-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  style={{
+                    backgroundColor: active ? dotActive : "rgba(0,0,0,0.2)",
+                  }}
+                />
+              </button>
             );
           })}
         </div>

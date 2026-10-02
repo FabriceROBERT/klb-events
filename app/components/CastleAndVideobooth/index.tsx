@@ -11,6 +11,9 @@ import {
   ChevronRight,
   Check,
 } from "lucide-react";
+import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
+import { EASE_OUT, Magnetic, SectionHeading } from "@/app/components/Motion";
+import { cn } from "@/lib/utils";
 
 type MediaItem = {
   src: string;
@@ -37,12 +40,18 @@ const DEFAULT_CHATEAUX: MediaItem[] = [
   { src: "/img/IMG-20250908-WA0007.jpg", alt: "" },
 ];
 
+type TabKey = "videobooth" | "chateaux";
+
+const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+  { key: "videobooth", label: "Videobooth", icon: <Camera className="h-4 w-4" /> },
+  { key: "chateaux", label: "Châteaux gonflables", icon: <Sparkles className="h-4 w-4" /> },
+];
+
 export default function BoothCastleScroller({
   videobooth = DEFAULT_VIDEObooth,
   chateaux = DEFAULT_CHATEAUX,
   whatsappTel = "+33765549836",
 }: Props) {
-  type TabKey = "videobooth" | "chateaux";
   const [tab, setTab] = useState<TabKey>("videobooth");
   const [selected, setSelected] = useState<number>(0);
 
@@ -52,6 +61,10 @@ export default function BoothCastleScroller({
   );
 
   const scrollerRef = useRef<HTMLDivElement | null>(null);
+
+  // Progression du défilement horizontal de la galerie
+  const { scrollXProgress } = useScroll({ container: scrollerRef });
+  const progress = useSpring(scrollXProgress, { stiffness: 200, damping: 30 });
 
   // ✅ WhatsApp URL builder mémoïsé
   const waNumber = whatsappTel.replace(/^\+/, "");
@@ -78,7 +91,7 @@ export default function BoothCastleScroller({
           "Accessoires fun fournis",
         ],
         cta: waHref("un videobooth"),
-        icon: <Camera className="h-5 w-5 text-[#D4AF37]" />,
+        icon: <Camera className="h-5 w-5 text-gold" />,
       };
     }
     return {
@@ -92,9 +105,15 @@ export default function BoothCastleScroller({
         "Idéal jardin/salle",
       ],
       cta: waHref("un château gonflable"),
-      icon: <Sparkles className="h-5 w-5 text-[#D4AF37]" />,
+      icon: <Sparkles className="h-5 w-5 text-gold" />,
     };
   }, [tab, waHref]);
+
+  const switchTab = (key: TabKey) => {
+    setTab(key);
+    setSelected(0);
+    scrollerRef.current?.scrollTo({ left: 0 });
+  };
 
   const scrollByCard = (dir: "left" | "right") => {
     const el = scrollerRef.current;
@@ -131,97 +150,125 @@ export default function BoothCastleScroller({
 
   return (
     <section
-      id="scroll-media"
-      className="relative w-full bg-[#0f0f10] text-gray-100">
+      id="animations"
+      aria-labelledby="animations-title"
+      className="relative w-full overflow-hidden bg-ink text-white">
       {/* Glow + liseré or */}
-      <div className="pointer-events-none absolute inset-0 [background:radial-gradient(65%_45%_at_50%_0%,rgba(212,175,55,0.10),transparent_65%)]" />
-      <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 [background:radial-gradient(65%_45%_at_80%_30%,rgba(212,175,55,0.10),transparent_65%)]"
+      />
 
-      <div className="relative mx-auto max-w-6xl px-6 py-14">
-        {/* Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <button
-            onClick={() => {
-              setTab("videobooth");
-              setSelected(0);
-            }}
-            className={`rounded-full px-4 py-2 text-sm border transition ${
-              tab === "videobooth"
-                ? "bg-[#D4AF37] text-black border-[#D4AF37]"
-                : "text-gray-200 border-white/10 hover:bg-white/5"
-            }`}
-            aria-pressed={tab === "videobooth"}>
-            <Camera className="mr-2 inline h-4 w-4" />
-            Videobooth
-          </button>
-          <button
-            onClick={() => {
-              setTab("chateaux");
-              setSelected(0);
-            }}
-            className={`rounded-full px-4 py-2 text-sm border transition ${
-              tab === "chateaux"
-                ? "bg-[#D4AF37] text-black border-[#D4AF37]"
-                : "text-gray-200 border-white/10 hover:bg-white/5"
-            }`}
-            aria-pressed={tab === "chateaux"}>
-            <Sparkles className="mr-2 inline h-4 w-4" />
-            Châteaux gonflables
-          </button>
+      <div className="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
+        <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+          <SectionHeading
+            id="animations-title"
+            index="02"
+            label="Animations"
+            title="Videobooth & châteaux gonflables"
+            accent={["Videobooth"]}
+            align="left"
+            className="max-w-xl"
+          />
+
+          {/* Tabs */}
+          <div
+            className="inline-flex shrink-0 self-start rounded-full border border-white/10 bg-white/[0.03] p-1 md:self-auto"
+            role="group"
+            aria-label="Choisir une animation">
+            {TABS.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => switchTab(t.key)}
+                className={cn(
+                  "relative isolate inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold",
+                  tab === t.key ? "text-ink" : "text-white/70 hover:text-white"
+                )}
+                aria-pressed={tab === t.key}>
+                {tab === t.key && (
+                  <motion.span
+                    layoutId="booth-tab"
+                    className="absolute inset-0 -z-10 rounded-full bg-gold"
+                    transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                  />
+                )}
+                {t.icon}
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+        <div className="mt-14 grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-10">
           {/* Carte d'infos */}
           <div className="order-2 lg:order-1">
-            <div className="relative rounded-2xl p-[1px] bg-gradient-to-br from-[#D4AF37]/70 via-[#9b7d2b]/30 to-transparent">
-              <div className="rounded-2xl bg-[#141415] p-6">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/5 border border-[#D4AF37]/30">
-                      {details.icon}
-                    </span>
-                    <h3 className="text-xl font-semibold">{details.title}</h3>
-                  </div>
-                  <span className="shrink-0 rounded-full border border-[#D4AF37]/40 px-3 py-1 text-[11px] text-[#D4AF37]">
-                    {details.price}
-                  </span>
-                </div>
+            <div className="relative rounded-3xl bg-gradient-to-br from-gold/60 via-white/10 to-transparent p-px">
+              <div className="min-h-[26rem] rounded-[calc(1.5rem-1px)] bg-ink-soft p-7">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={tab}
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.45, ease: EASE_OUT }}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold/30 bg-gold/10">
+                          {details.icon}
+                        </span>
+                        <h3 className="font-display text-2xl font-bold">
+                          {details.title}
+                        </h3>
+                      </div>
+                      <span className="shrink-0 rounded-full border border-gold/40 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-gold">
+                        {details.price}
+                      </span>
+                    </div>
 
-                <ul className="mt-4 space-y-2">
-                  {details.bullets.map((b, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2 text-sm text-gray-300">
-                      <Check className="mt-0.5 h-4 w-4 text-[#D4AF37] shrink-0" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
+                    <ul className="mt-7 space-y-3">
+                      {details.bullets.map((b, i) => (
+                        <motion.li
+                          key={b}
+                          className="flex items-start gap-3 text-sm text-white/75"
+                          initial={{ opacity: 0, x: -12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{
+                            duration: 0.5,
+                            delay: 0.1 + i * 0.05,
+                            ease: EASE_OUT,
+                          }}>
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                          <span>{b}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
 
-                <div className="mt-5 flex items-center justify-between">
-                  <a
-                    href={details.cta}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-4 py-2 text-sm font-medium text-black hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/60"
-                    aria-label={`Contacter pour ${details.title} sur WhatsApp`}>
-                    <MessageCircle className="h-4 w-4" />
-                    WhatsApp
-                  </a>
-                  <span className="text-xs text-gray-400">
-                    Photo {selected + 1} / {items.length}
-                  </span>
-                </div>
+                    <div className="mt-8 flex items-center justify-between">
+                      <Magnetic strength={0.25}>
+                        <a
+                          href={details.cta}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-shine inline-flex items-center gap-2 rounded-full bg-whatsapp px-5 py-2.5 text-sm font-medium text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-whatsapp/60"
+                          aria-label={`Contacter pour ${details.title} sur WhatsApp`}>
+                          <MessageCircle className="h-4 w-4" />
+                          WhatsApp
+                        </a>
+                      </Magnetic>
+                      <span className="font-mono text-xs text-white/45 tabular-nums">
+                        {String(selected + 1).padStart(2, "0")} /{" "}
+                        {String(items.length).padStart(2, "0")}
+                      </span>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
           </div>
 
           {/* Scroll images */}
           <div className="relative order-1 lg:order-2">
-            {/* Bords en fondu */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#0f0f10] to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#0f0f10] to-transparent" />
-
             <div
               ref={scrollerRef}
               onScroll={() => {
@@ -235,57 +282,67 @@ export default function BoothCastleScroller({
               "
               aria-label="Galerie défilante">
               {items.map((m, idx) => (
-                <button
-                  key={`${m.src}-${idx}`}
+                <motion.button
+                  key={`${tab}-${m.src}-${idx}`}
                   data-card
                   type="button"
                   onClick={() => setSelected(idx)}
-                  className={`
-                    group relative shrink-0 w-[82%] sm:w-[60%] md:w-[48%] lg:w-[360px]
-                    snap-start overflow-hidden rounded-2xl border
-                    ${
-                      idx === selected
-                        ? "border-[#D4AF37]/60"
-                        : "border-white/10"
-                    }
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
-                  `}
+                  initial={{ opacity: 0, x: 40, scale: 0.94 }}
+                  whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.7, delay: idx * 0.08, ease: EASE_OUT }}
+                  className={cn(
+                    "group relative w-[82%] shrink-0 snap-start overflow-hidden rounded-3xl border transition-colors duration-500 sm:w-[60%] md:w-[48%] lg:w-[340px]",
+                    idx === selected ? "border-gold/70" : "border-white/10",
+                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                  )}
                   aria-label={`Voir la photo ${idx + 1}`}>
-                  <div className="relative h-56 md:h-64">
+                  <div className="relative h-80 md:h-[26rem]">
                     <Image
                       src={m.src}
                       alt={m.alt}
                       fill
-                      sizes="(max-width: 640px) 82vw, (max-width: 768px) 60vw, (max-width: 1024px) 48vw, 360px"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 82vw, (max-width: 768px) 60vw, (max-width: 1024px) 48vw, 340px"
+                      className="object-cover transition-transform duration-700 ease-expo group-hover:scale-110"
                       priority={idx === 0}
                     />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  <div className="absolute left-3 bottom-3">
-                    <p className="rounded-md bg-black/40 px-2 py-1 text-xs text-gray-200 backdrop-blur">
-                      {m.caption ?? m.alt}
-                    </p>
-                  </div>
-                </button>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className="absolute left-4 top-4 font-mono text-xs text-white/80">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                  {(m.caption ?? m.alt) && (
+                    <div className="absolute bottom-4 left-4">
+                      <p className="rounded-full bg-black/40 px-3 py-1 text-xs text-white/90 backdrop-blur">
+                        {m.caption ?? m.alt}
+                      </p>
+                    </div>
+                  )}
+                </motion.button>
               ))}
             </div>
 
-            {/* Boutons */}
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-between">
+            {/* Progression + boutons */}
+            <div className="mt-5 flex items-center gap-4">
+              <div className="relative h-px flex-1 bg-white/10">
+                <motion.div
+                  className="absolute inset-0 origin-left bg-gold"
+                  style={{ scaleX: progress }}
+                />
+              </div>
               <button
                 type="button"
                 onClick={() => scrollByCard("left")}
-                className="pointer-events-auto ml-1 rounded-full bg-black/50 p-2 backdrop-blur hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:border-gold hover:bg-gold hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                 aria-label="Précédent">
-                <ChevronLeft className="h-5 w-5 text-white" />
+                <ChevronLeft className="h-5 w-5" />
               </button>
               <button
                 type="button"
                 onClick={() => scrollByCard("right")}
-                className="pointer-events-auto mr-1 rounded-full bg-black/50 p-2 backdrop-blur hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:border-gold hover:bg-gold hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                 aria-label="Suivant">
-                <ChevronRight className="h-5 w-5 text-white" />
+                <ChevronRight className="h-5 w-5" />
               </button>
             </div>
           </div>

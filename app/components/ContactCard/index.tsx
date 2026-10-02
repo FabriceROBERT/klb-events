@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone, MessageCircle, Copy, Check } from "lucide-react";
 import React, { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Equalizer, Stagger, StaggerItem } from "@/app/components/Motion";
 
 type Props = {
   name: string;
@@ -69,109 +71,100 @@ export default function ContactCard({
       className={["w-full mx-auto", className].join(" ")}
       aria-label={`Contact ${name}`}>
       {/* Cadre or */}
-      <div className="relative rounded-2xl p-[1px] bg-gradient-to-br from-[#D4AF37]/80 via-[#9b7d2b]/40 to-transparent">
-        <div className="rounded-2xl bg-[#0f0f10] text-gray-100">
+      <div className="relative rounded-3xl p-px bg-gradient-to-br from-gold/70 via-white/10 to-transparent">
+        <div className="rounded-[calc(1.5rem-1px)] bg-ink-soft text-white">
           {/* En-tête */}
-          <div className="flex items-center gap-4 p-5 border-b border-white/10">
+          <div className="flex items-center gap-4 p-6 border-b border-white/10">
             <div className="relative h-16 w-16 shrink-0">
               {avatarSrc ? (
                 <Image
                   src={avatarSrc}
                   alt={`Avatar de ${name}`}
                   fill
-                  className="rounded-full object-cover ring-2 ring-[#D4AF37]/40"
+                  className="rounded-full object-cover ring-2 ring-gold/50"
                   sizes="64px"
                   priority
                 />
               ) : (
-                <div className="h-16 w-16 rounded-full bg-white/10 flex items-center justify-center text-lg font-semibold ring-2 ring-[#D4AF37]/40">
+                <div className="h-16 w-16 rounded-full bg-white/10 flex items-center justify-center text-lg font-semibold ring-2 ring-gold/50">
                   {initials || "?"}
                 </div>
               )}
             </div>
             <div className="min-w-0">
-              <h3 className="text-lg font-semibold truncate">{name}</h3>
-              {role && <p className="text-sm text-gray-400 truncate">{role}</p>}
+              <h3 className="font-display text-xl font-bold truncate">{name}</h3>
+              {role && <p className="text-sm text-white/55 truncate">{role}</p>}
             </div>
+            <Equalizer bars={5} className="ml-auto h-5" />
           </div>
 
           {/* Lignes de contact */}
-          <ul className="p-5 space-y-3">
+          <Stagger as="ul" stagger={0.1} className="p-3 space-y-1">
             {/* Email */}
-            <li className="flex items-center justify-between gap-3">
+            <StaggerItem
+              as="li"
+              className="flex items-center justify-between gap-3 rounded-2xl p-3 transition-colors duration-300 hover:bg-white/[0.04]">
               <div className="flex items-center gap-3 min-w-0">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/5 border border-white/10">
-                  <Mail className="h-4 w-4 text-[#D4AF37]" />
+                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold/10 border border-gold/25">
+                  <Mail className="h-4 w-4 text-gold" />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-xs text-gray-400">Email</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">Email</p>
                   <Link
                     href={`mailto:${email}`}
-                    className="block text-sm hover:underline truncate">
+                    className="block text-sm text-white/90 underline-offset-4 hover:text-gold hover:underline truncate">
                     {email}
                   </Link>
                 </div>
               </div>
               <button
                 onClick={() => handleCopy(email, "email")}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                className="inline-flex min-h-11 min-w-[6.5rem] items-center justify-center overflow-hidden rounded-full border border-white/10 px-4 text-xs transition-colors hover:border-gold/50 hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                 aria-label="Copier l'adresse email">
-                {copied === "email" ? (
-                  <>
-                    <Check className="h-3.5 w-3.5" /> Copié
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-3.5 w-3.5" /> Copier
-                  </>
-                )}
+                <CopyLabel copied={copied === "email"} />
               </button>
-            </li>
+            </StaggerItem>
 
             {/* Téléphone */}
-            <li className="flex items-center justify-between gap-3">
+            <StaggerItem
+              as="li"
+              className="flex items-center justify-between gap-3 rounded-2xl p-3 transition-colors duration-300 hover:bg-white/[0.04]">
               <div className="flex items-center gap-3 min-w-0">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/5 border border-white/10">
-                  <Phone className="h-4 w-4 text-[#D4AF37]" />
+                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold/10 border border-gold/25">
+                  <Phone className="h-4 w-4 text-gold" />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-xs text-gray-400">Téléphone</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">Téléphone</p>
                   <a
                     href={`tel:${sanitizedPhone}`}
-                    className="block text-sm hover:underline truncate">
+                    className="block text-sm text-white/90 underline-offset-4 hover:text-gold hover:underline truncate">
                     {phone}
                   </a>
                 </div>
               </div>
               <button
                 onClick={() => handleCopy(sanitizedPhone, "phone")}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                className="inline-flex min-h-11 min-w-[6.5rem] items-center justify-center overflow-hidden rounded-full border border-white/10 px-4 text-xs transition-colors hover:border-gold/50 hover:bg-white/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                 aria-label="Copier le numéro de téléphone">
-                {copied === "phone" ? (
-                  <>
-                    <Check className="h-3.5 w-3.5" /> Copié
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-3.5 w-3.5" /> Copier
-                  </>
-                )}
+                <CopyLabel copied={copied === "phone"} />
               </button>
-            </li>
+            </StaggerItem>
 
             {/* WhatsApp */}
-            <li className="flex items-center justify-between gap-3">
+            <StaggerItem
+              as="li"
+              className="flex items-center justify-between gap-3 rounded-2xl p-3 transition-colors duration-300 hover:bg-white/[0.04]">
               <div className="flex items-center gap-3 min-w-0">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/5 border border-white/10">
-                  <MessageCircle className="h-4 w-4 text-[#D4AF37]" />
+                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold/10 border border-gold/25">
+                  <MessageCircle className="h-4 w-4 text-gold" />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-xs text-gray-400">WhatsApp</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">WhatsApp</p>
                   <a
                     href={waHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-sm hover:underline truncate">
+                    className="block text-sm text-white/90 underline-offset-4 hover:text-gold hover:underline truncate">
                     Ouvrir la conversation
                   </a>
                 </div>
@@ -180,21 +173,43 @@ export default function ContactCard({
                 href={waHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-lg bg-[#D4AF37] px-3 py-1.5 text-xs font-medium text-black hover:bg-[#c49a2c] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                className="btn-shine inline-flex min-h-11 items-center justify-center rounded-full bg-gold px-4 text-xs font-semibold text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                 aria-label="Contacter via WhatsApp">
                 Écrire sur WhatsApp
               </a>
-            </li>
-          </ul>
+            </StaggerItem>
+          </Stagger>
         </div>
       </div>
       {/* Note légale / clarification */}
-      <p className="mt-6 text-center mb-10 text-xs text-gray-500">
+      <p className="mt-5 text-center text-xs text-white/45">
         Les devis sont gratuits et n’impliquent aucun engagement de votre part.
       </p>
-
-      {/* Liseré or décoratif */}
-      <div className="mt-3 h-0.5 w-24 mx-auto bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
     </section>
+  );
+}
+
+/** Libellé « Copier » qui bascule sur « Copié » avec un glissement vertical. */
+function CopyLabel({ copied }: { copied: boolean }) {
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={copied ? "done" : "idle"}
+        className={`inline-flex items-center gap-2 ${copied ? "text-gold" : ""}`}
+        initial={{ y: 12, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -12, opacity: 0 }}
+        transition={{ duration: 0.2 }}>
+        {copied ? (
+          <>
+            <Check className="h-3.5 w-3.5" /> Copié
+          </>
+        ) : (
+          <>
+            <Copy className="h-3.5 w-3.5" /> Copier
+          </>
+        )}
+      </motion.span>
+    </AnimatePresence>
   );
 }
