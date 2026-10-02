@@ -15,49 +15,51 @@ import {
 } from "@/app/components/Motion";
 import { cn } from "@/lib/utils";
 
+// Chaque formule reprend la précédente et ajoute des prestations
 const features = {
   essentiel: [
-    "Jusqu’à 3 heures de couverture",
-    "Galerie en ligne (30 jours)",
-    "Templates de base",
-    "Partage instantané par QR Code",
+    "Animation DJ jusqu’à 4 heures",
+    "Sonorisation professionnelle adaptée à la salle",
+    "Jeu de lumières d’ambiance",
+    "Micro sans fil pour les discours",
+    "Playlist préparée avec vous en amont",
   ],
   premium: [
-    "Jusqu’à 6 heures de couverture",
-    "Galerie en ligne (90 jours)",
-    "Templates personnalisés (charte)",
-    "Assistant(e) dédié(e) sur place",
-    "Vidéo courte récap de l’événement",
+    "Animation DJ jusqu’à 6 heures",
+    "Tout le contenu de la formule Essentiel",
+    "Éclairage dynamique de la piste de danse",
+    "Rendez-vous de préparation personnalisé",
+    "Gestion des temps forts (entrée, ouverture de bal, gâteau)",
   ],
   prestige: [
-    "Couverture journée complète",
-    "Galerie en ligne (illimitée)",
-    "Templates sur-mesure + animation",
-    "Équipe dédiée (2 opérateurs)",
-    "Impression instantanée (selon device)",
-    "Fond vert / décor premium",
+    "Animation DJ jusqu’à 8 heures",
+    "Tout le contenu de la formule Premium",
+    "Sonorisation du cocktail ou de la cérémonie",
+    "Mise en lumière de la salle",
+    "Effets scéniques pour l’ouverture de bal (selon le lieu)",
+    "Coordination le jour J avec la salle et le traiteur",
   ],
 };
 
 const OFFERS: CardProps[] = [
   {
     title: "Essentiel",
-    price: 499,
-    desc: "La base idéale pour un événement réussi.",
+    price: 790,
+    desc: "L’essentiel pour une soirée réussie.",
     items: features.essentiel,
   },
   {
     title: "Premium",
-    price: 899,
+    price: 990,
     tag: "Populaire",
-    desc: "L’équilibre parfait : personnalisation & accompagnement.",
+    desc: "L’équilibre parfait : ambiance, lumière & accompagnement.",
     items: features.premium,
     highlight: true,
   },
   {
     title: "Prestige",
-    price: 1490,
-    desc: "Le niveau supérieur pour une expérience grand luxe.",
+    price: 1250,
+    desc: "L’expérience grand luxe, du cocktail au bout de la nuit.",
     items: features.prestige,
   },
 ];
@@ -149,7 +151,7 @@ function Card({ title, price, tag, desc, items, highlight = false }: CardProps) 
               </span>
             )}
           </div>
-          <p className="mt-2 text-sm text-white/55">{desc}</p>
+          <p className="mt-2 min-h-10 text-sm text-white/55">{desc}</p>
 
           <div className="mt-8 flex items-baseline gap-2 border-b border-white/10 pb-8">
             <CountUp
